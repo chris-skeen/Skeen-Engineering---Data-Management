@@ -29,7 +29,6 @@ class surveys(models.Model):
     Favorite = models.BooleanField(default=False)
     Hourly = models.BooleanField(default=False)
     HourlyAmount = models.CharField(max_length=20)
-
     class Meta:
             db_table = 'surveys'
     

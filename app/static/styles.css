@@ -1,0 +1,16 @@
+#create-data-btn {
+  background-color: lightgreen;
+}
+
+.create-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.hourly-header{
+  text-align: center;
+}
+
+#hourly-ammount-box {
+  display: none;
+}

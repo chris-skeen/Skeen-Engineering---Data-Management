@@ -1,8 +1,13 @@
 from django.shortcuts import render
 from app.models import *
+from app.forms import *
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+
+
 # Create your views here.
+
+# Main Pages ----
 
 def all_data_view(request):
   # Always re writing json file on new page
@@ -16,8 +21,7 @@ def all_data_view(request):
 
   return render(request, "data.html", {"data": data, "json_data": json_data})
 
-def view_map(request):
-  
+def map_view(request):
   # Always re writing json file on new page
   data = surveys.objects.values()
   json_data = json.dumps(list(data), indent=2, cls=DjangoJSONEncoder)
@@ -29,3 +33,80 @@ def view_map(request):
 
   data = surveys.objects.all()
   return render(request, "map.html", {"data": data})
+
+def client_view(request):
+  # View all clients
+  data = surveys.objects.all()
+  return render(request, "clients.html", {"data": data})
+
+# Side Pages ---
+
+def create_data_view(request):
+    context = {}
+
+    if request.method == "POST":
+        form = SurveyForm(request.POST)
+        if form.is_valid():
+            # Save To DB (Still need both USD Vales)
+            date_ordered = form.cleaned_data.get('DateOrdered')
+            due_date = form.cleaned_data.get('DueDate')
+            number = form.cleaned_data.get('Number')
+            description = form.cleaned_data.get('Description')
+            amount = form.cleaned_data.get('Amount')
+            nte_price = form.cleaned_data.get('NTEPrice')
+            client = form.cleaned_data.get('Client')
+            phone_number = form.cleaned_data.get('PhoneNumber')
+            address = form.cleaned_data.get('Address')
+            city = form.cleaned_data.get('City')
+            state = form.cleaned_data.get('State')
+            county = form.cleaned_data.get('County')
+            fractional_lot = form.cleaned_data.get('FracitonalLot')
+            section = form.cleaned_data.get('Section')
+            township = form.cleaned_data.get('Township')
+            _range = form.cleaned_data.get('Range')
+            subdivision = form.cleaned_data.get('Subdivision')
+            blocksection = form.cleaned_data.get('BlockSection')
+            lot = form.cleaned_data.get('Lot')
+            status = form.cleaned_data.get('Status')
+            comments = form.cleaned_data.get('Comments')
+            favorite = form.cleaned_data.get('Favorite')
+            hourly = form.cleaned_data.get('Hourly')
+            hourly_ammount = form.cleaned_data.get('HourlyAmmount')
+
+            obj = surveys(DateOrdered = date_ordered,
+                          DueDate = due_date,
+                          Number = number,
+                          Description = description,
+                          amount_currency = 'USD',
+                          Amount = amount,
+                          NTEPrice_currency = 'USD',
+                          NTEPrice = nte_price,
+                          Client = client,
+                          PhoneNumber = phone_number,
+                          Address = address,
+                          City = city,
+                          State = state,
+                          County = county,
+                          FractionalLot = fractional_lot,
+                          Section = section,
+                          Township = township,
+                          Range = _range,
+                          Subdivision = subdivision,
+                          BlockSection = blocksection,
+                          Lot = lot,
+                          Status = status,
+                          Comments = comments,
+                          Favorite = favorite,
+                          Hourly = hourly,
+                          Hourly_ammount = hourly_ammount)
+  
+            obj.save()
+
+
+            
+        context['form'] = form 
+    else:
+        form = SurveyForm()
+        context['form'] = form 
+
+    return render(request, "create-data.html", context)
