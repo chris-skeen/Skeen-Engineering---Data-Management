@@ -25,9 +25,9 @@
 
       <div id="checkbox-container"></div>
 
-      {% render_field form.Amount placeholder="Amount" class+="boxes" id+="ammount-box" %}
+      {% render_field form.Ammount placeholder="Ammount" class+="boxes" id+="ammount-box" %}
 
-      {% render_field form.HourlyAmount placeholder="Hourly Amount" class+="boxes" id+="hourly-ammount-box" %}
+      {% render_field form.HourlyAmmount placeholder="Hourly Ammount" class+="boxes" id+="hourly-ammount-box" %}
 
       {% render_field form.NTEPrice placeholder="NTE Price" class+="boxes" id+="nteprice-box" %}
 
@@ -58,6 +58,18 @@
       {% render_field form.Lot placeholder="Lot" class+="boxes" id+="lot-box" %}
 
       {% render_field form.Status placeholder="Status" class+="boxes" id+="status-box" %}
+
+      {% render_field form.Comments placeholder="Comments" class+="boxes" id+="comments-box" %}
+
+      {% if form.errors %}
+          <ul class="errors">
+              {% for field in form %}
+                  {% for error in field.errors %}
+                      <li>{{ field.label }}: {{ error }}</li>
+                  {% endfor %}
+              {% endfor %}
+          </ul>
+      {% endif %}
       <button class="create-data-btn">Create</button>
     </form>
   </div>

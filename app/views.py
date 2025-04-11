@@ -46,13 +46,15 @@ def create_data_view(request):
 
     if request.method == "POST":
         form = SurveyForm(request.POST)
+        print("POST data:", request.POST)
         if form.is_valid():
-            # Save To DB (Still need both USD Vales)
+            print('hi')
+            # Save To DB
             date_ordered = form.cleaned_data.get('DateOrdered')
             due_date = form.cleaned_data.get('DueDate')
             number = form.cleaned_data.get('Number')
             description = form.cleaned_data.get('Description')
-            amount = form.cleaned_data.get('Amount')
+            ammount = form.cleaned_data.get('Ammount')
             nte_price = form.cleaned_data.get('NTEPrice')
             client = form.cleaned_data.get('Client')
             phone_number = form.cleaned_data.get('PhoneNumber')
@@ -60,7 +62,7 @@ def create_data_view(request):
             city = form.cleaned_data.get('City')
             state = form.cleaned_data.get('State')
             county = form.cleaned_data.get('County')
-            fractional_lot = form.cleaned_data.get('FracitonalLot')
+            fractional_lot = form.cleaned_data.get('FractionalLot')
             section = form.cleaned_data.get('Section')
             township = form.cleaned_data.get('Township')
             _range = form.cleaned_data.get('Range')
@@ -73,13 +75,14 @@ def create_data_view(request):
             hourly = form.cleaned_data.get('Hourly')
             hourly_ammount = form.cleaned_data.get('HourlyAmmount')
 
+            if not nte_price:
+                nte_price = 0.00  # Example: setting a default value
+
             obj = surveys(DateOrdered = date_ordered,
                           DueDate = due_date,
                           Number = number,
                           Description = description,
-                          amount_currency = 'USD',
-                          Amount = amount,
-                          NTEPrice_currency = 'USD',
+                          Ammount = ammount,
                           NTEPrice = nte_price,
                           Client = client,
                           PhoneNumber = phone_number,
@@ -98,15 +101,20 @@ def create_data_view(request):
                           Comments = comments,
                           Favorite = favorite,
                           Hourly = hourly,
-                          Hourly_ammount = hourly_ammount)
-  
-            obj.save()
+                          HourlyAmmount = hourly_ammount)
+            try:
+              obj.save()
+              print("Saved:", obj.id)
+            except Exception as e:
+              print("Error saving object:", e)
 
 
             
         context['form'] = form 
     else:
+        print('wrong')
         form = SurveyForm()
+        print(form.errors)
         context['form'] = form 
 
     return render(request, "create-data.html", context)

@@ -1,12 +1,12 @@
 from django import forms
 
 class SurveyForm(forms.Form):
-    DateOrdered = forms.DateField(required=False, input_formats=['%d/%m/%Y'])
-    DueDate = forms.DateField(required=False, input_formats=['%d/%m/%Y'])
+    DateOrdered = forms.DateField(required=False, input_formats=['%m/%d/%Y'])
+    DueDate = forms.DateField(required=False, input_formats=['%m/%d/%Y'])
     Number = forms.CharField(max_length=6, required=True)
     Description = forms.CharField(max_length=99, required=False)
-    Amount = forms.IntegerField(required=False)
-    NTEPrice = forms.IntegerField(required=False)
+    Ammount = forms.DecimalField(required=False, max_digits=10, decimal_places=2)
+    NTEPrice = forms.DecimalField(required=False, max_digits=10, decimal_places=2)
     Client = forms.CharField(max_length=50, required=True)
     PhoneNumber = forms.CharField(max_length=12, required=False)
     Address = forms.CharField(max_length=40, required=True)
@@ -24,4 +24,4 @@ class SurveyForm(forms.Form):
     Comments = forms.CharField(max_length=100, required=False)
     Favorite = forms.BooleanField(required=False)
     Hourly = forms.BooleanField(required=False)
-    HourlyAmount = forms.CharField(max_length=20, required=False)
+    HourlyAmmount = forms.CharField(max_length=20, required=False)

@@ -9,8 +9,8 @@ class surveys(models.Model):
     DueDate = models.DateField()
     Number = models.CharField(max_length=6)
     Description = models.CharField(max_length=99)
-    Amount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
-    NTEPrice = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    Ammount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD', blank=True, default=0.00)
+    NTEPrice = MoneyField(max_digits=10, decimal_places=2, default_currency='USD', blank=True, default=0.00)
     Client = models.CharField(max_length=50)
     PhoneNumber = models.CharField(max_length=12)
     Address = models.CharField(max_length=40)
@@ -28,7 +28,7 @@ class surveys(models.Model):
     Comments = models.CharField(max_length=100)
     Favorite = models.BooleanField(default=False)
     Hourly = models.BooleanField(default=False)
-    HourlyAmount = models.CharField(max_length=20)
+    HourlyAmmount = models.CharField(max_length=20, blank=True)
     class Meta:
             db_table = 'surveys'
     
