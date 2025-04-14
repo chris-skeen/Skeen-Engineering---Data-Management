@@ -1,14 +1,23 @@
-from django.shortcuts import render
+# django basic imports
+from django.shortcuts import render, redirect
 from app.models import *
 from app.forms import *
+from django.contrib import messages
+# json based imports
 import json
 from django.core.serializers.json import DjangoJSONEncoder
-
-
-# Create your views here.
+# user based imports
+from django.contrib.auth.forms import UserCreationForm
+from .forms import CreateUserForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from app.decorators import *
+from django.contrib.auth.models import Group
 
 # Main Pages ----
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
 def all_data_view(request):
   # Always re writing json file on new page
   data = surveys.objects.values()
@@ -21,6 +30,8 @@ def all_data_view(request):
 
   return render(request, "data.html", {"data": data, "json_data": json_data})
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
 def map_view(request):
   # Always re writing json file on new page
   data = surveys.objects.values()
@@ -34,13 +45,55 @@ def map_view(request):
   data = surveys.objects.all()
   return render(request, "map.html", {"data": data})
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
 def client_view(request):
   # View all clients
   data = surveys.objects.all()
   return render(request, "clients.html", {"data": data})
 
-# Side Pages ---
+# User Pages ---
 
+@unauthenticated_user
+def login_view(request):
+   context = {}
+   if request.method == 'POST':
+      username = request.POST.get('username')
+      password = request.POST.get('password')
+      user = authenticate(request, username=username, password=password)
+
+      if user is not None:
+         print('hi')
+         login(request, user)
+         return redirect('map')
+      else:
+         messages.info(request, 'Username OR Password Incorrect.')
+   return render(request, "login.html", context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def logout_view(request):
+   logout(request)
+   return redirect('login')
+
+@unauthenticated_user
+def signup_view(request):
+   form = CreateUserForm()
+
+   if request.method == 'POST':
+      form = UserCreationForm(request.POST)
+      if form.is_valid():
+         user = form.save()
+         username = form.cleaned_data.get('username')
+         messages.success(request, 'Account Successfully Created - ' + username)
+         return redirect('login')
+
+   context = {'form':form}
+   return render(request, "signup.html", context)
+
+# Side Pages ---
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
 def create_data_view(request):
     context = {}
 
